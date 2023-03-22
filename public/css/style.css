@@ -22,7 +22,7 @@
   
   body {
     margin: 0;
-    background-color: #000000;
+    background-color: green;
   }
   
   /**
@@ -386,25 +386,7 @@
    * Work around a Firefox/IE bug where the transparent `button` background
    * results in a loss of the default `button` focus styles.
    */
-  /* Style for room links */
-button {
-    display: block;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 20px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #1DA1F2;
-    background-color: #F5F8FA;
-    border: none;
-  }
   
-  button:hover {
-    cursor: pointer;
-    background-color: #E8F4FB;
-  }
-  
-
   button:focus {
     outline: 1px dotted;
     outline: 5px auto -webkit-focus-ring-color;
