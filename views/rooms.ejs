@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=yes" />
+    <title>CATTREE</title>
+    <script src="/js/rooms.js" defer></script>
+    <link href="/css/style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun/lib/promise.js"></script>
+    <script>
+      (function() {
+        console.log('room browser bootstrap')
+        // Shared GUN scope for ROOM management only (no signaling here!)
+        var gun = Gun({
+          peers: ["https://localhost:3000/gun"],
+          multicast: false,
+          localStorage: false,
+          radisk: false,
+          file: false
+        });
+        // Raw gunRooms GUN
+        window.gunRooms = gun.get('rooms');
+        // Clone EJS gunRooms GUN
+        
+    })();
+    </script>
+
+  </head>
+  <body>
+    <div id="bins">
+    </div>
+    <div class="max-w-4xl min-h-screen box-border px-10 py-5 mx-auto my-0">
+      <h1 style="display: inline;" class="text-5xl my-10 " >openhøüse</h1>
+      <button onClick="startRoom()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 mt-4 mb-12 w-full rounded-full">+ Start a Room</button>
+      <div>
+        <% for (var i = 0; i < Object.values(rooms).length; i++) { %>
+          <%if (!Object.values(rooms)[i].locked) { %>
+            <button onClick="joinGunRoom(event)" class="flex items-center justify-center px-4 py-2 mt-2 text-base font-medium text-white bg-blue-500 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 13v-2m0-3.5v-1a2.5 2.5 0 0 1 5 0v1a2.5 2.5 0 0 1-5 0z" />
+                </svg>
+                <span><%= room.title %> (<%= room.count || 0 %>)</span>
+            </button>
+          <% } %>
+        <% } %>
+      </div>
+    </div> 
+  </body>
+</html>

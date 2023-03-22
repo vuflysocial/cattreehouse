@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=yes" />
+    <img class="navbar-brand" src="/logo.png" alt="Logo" width="100" height="100">
+
+
+    <title>CATTREE</title>
+    <script src="https://cdn.jsdelivr.net/npm/ejs@3.1.6/ejs.min.js"></script>
+    <script src="/js/rooms.js" defer></script>
+    <script
+      src="//cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"
+      onload="initFingerprintJS()" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun@0.2020.514/gun.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun@0.2020.514/lib/open.js"></script>
+    <link href="/css/style.css" rel="stylesheet">
+    <script>
+    document.addEventListener('DOMContentLoaded', async function(event) {
+        console.log('room browser bootstrap')
+        // Shared GUN scope for ROOM management only (no signaling here!)
+        var gun = Gun({ peers: ["https://localhost:3000/gun"] });
+        // Helper
+        function clean(obj) {
+          for (var propName in obj) {
+            if (obj[propName] === null || obj[propName] === undefined || propName == "_" || (obj[propName].count <= 0 && obj[propName].title != "Lobby") ) {
+              delete obj[propName];
+            } else {
+              console.log(obj[propName])
+            }
+          }
+          return obj
+        }
+      
+        // Raw gunRooms GUN
+        var gunRooms;
+        window.gunRooms = gun.get('rooms');
+        window.gunRooms.open(function(obj){
+            gunRooms = clean(obj);
+            var html = ejs.render('<% for (const [id, room] of Object.entries(gunRooms)){ %>'
+                                  +' <%if (room != null && room.title && !room.locked) { %>'
+                                  +' <button onClick="joinGunRoom(event)" class="w-full px-6 py-4 mb-2 bg-gray-200 hover:bg-gray-300 rounded-md font-medium" name="<%= id %>">'
+                                  +'   <%= room.title %> (<%= room.count || 0 %>)'
+                                  +' </button>'
+                                  +' <% } %>'
+                                  +'<% } %>', {gunRooms: gunRooms });
+            // Vanilla JS:
+            document.getElementById('output').innerHTML = html;  
+        });
+    });
+    </script>
+
+  </head>
+  <body>
+    <div id="bins">
+    </div>
+    <div class="max-w-4xl min-h-screen box-border px-10 py-5 mx-auto my-0">
+      <h1 style="display: inline;" class="text-5xl my-10 " >CATTREE</h1>
+      <button onclick="startRoom()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 mt-4 mb-12 w-full rounded-full">+ Start a Tree</button>
+     
+      <!-- experimental block -->
+      <div id="output"></div>
+      <script>
+        
+      </script>
+      
+    </div>
+  </body>
+</html>
